@@ -1,0 +1,97 @@
+export type Client = {
+  number: string;
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+  status: string;
+  totalSpent: string;
+  lastOrder: string;
+  deadline: string;
+};
+
+export const clients: Client[] = [
+  {
+    number: "CL-1001",
+    name: "Amal Carter",
+    phone: "+1 212 555 0184",
+    email: "amal.carter@example.com",
+    address: "48 Cedar Lane, Brooklyn, NY",
+    status: "Active",
+    totalSpent: "$18,450",
+    lastOrder: "Kitchen renovation",
+    deadline: "June 14, 2026",
+  },
+  {
+    number: "CL-1002",
+    name: "Noah Bennett",
+    phone: "+1 646 555 0139",
+    email: "noah.bennett@example.com",
+    address: "122 Lake Street, Newark, NJ",
+    status: "Active",
+    totalSpent: "$9,720",
+    lastOrder: "Bathroom remodel",
+    deadline: "May 28, 2026",
+  },
+  {
+    number: "CL-1003",
+    name: "Sara Haddad",
+    phone: "+1 917 555 0167",
+    email: "sara.haddad@example.com",
+    address: "9 Pine Avenue, Queens, NY",
+    status: "Pending",
+    totalSpent: "$24,100",
+    lastOrder: "Full apartment refresh",
+    deadline: "July 3, 2026",
+  },
+  {
+    number: "CL-1004",
+    name: "Leo Martinez",
+    phone: "+1 718 555 0198",
+    email: "leo.martinez@example.com",
+    address: "304 Maple Road, Hoboken, NJ",
+    status: "Active",
+    totalSpent: "$6,300",
+    lastOrder: "Flooring replacement",
+    deadline: "June 2, 2026",
+  },
+];
+
+export const clientOrders = [
+  {
+    order: "ORD-2301",
+    client: "Amal Carter",
+    service: "Kitchen renovation",
+    orderDate: "April 22, 2026",
+    deadline: "June 14, 2026",
+    price: "$18,450",
+    progress: "In progress",
+  },
+  {
+    order: "ORD-2302",
+    client: "Noah Bennett",
+    service: "Bathroom remodel",
+    orderDate: "May 1, 2026",
+    deadline: "May 28, 2026",
+    price: "$9,720",
+    progress: "Materials ready",
+  },
+  {
+    order: "ORD-2303",
+    client: "Sara Haddad",
+    service: "Full apartment refresh",
+    orderDate: "May 9, 2026",
+    deadline: "July 3, 2026",
+    price: "$24,100",
+    progress: "Planning",
+  },
+  {
+    order: "ORD-2304",
+    client: "Leo Martinez",
+    service: "Flooring replacement",
+    orderDate: "May 12, 2026",
+    deadline: "June 2, 2026",
+    price: "$6,300",
+    progress: "Scheduled",
+  },
+];
