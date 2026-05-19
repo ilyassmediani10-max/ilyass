@@ -10,11 +10,11 @@ import {
 } from "lucide-react";
 import type { Client } from "../client-data";
 
-type ClientProfileProps = {
+type IProps = {
   clients: Client[];
 };
 
-export function ClientProfile({ clients }: ClientProfileProps) {
+export function ClientProfile({ clients }: IProps) {
   const [selectedNumber, setSelectedNumber] = useState(clients[0]?.number ?? "");
 
   const selectedClient = useMemo(

@@ -25,21 +25,20 @@ const emptyClient: Client = {
   deadline: "",
 };
 
-type ClientManagerProps = {
+type IProps = {
   initialClients: Client[];
 };
 
-export function ClientManager({ initialClients }: ClientManagerProps) {
+export function ClientManager({ initialClients }: IProps) {
   const [clients, setClients] = useState<Client[]>(initialClients);
   const [form, setForm] = useState<Client>(emptyClient);
   const [editingNumber, setEditingNumber] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
-  const sortedClients = useMemo(
-    () => [...clients].sort((first, second) => first.number.localeCompare(second.number)),
-    [clients],
-  );
+  const sortedClients = useMemo(() => {
+    return [...clients].sort((a, b) => a.number.localeCompare(b.number));
+  }, [clients]);
 
   const isEditing = editingNumber !== null;
 
@@ -60,13 +59,13 @@ export function ClientManager({ initialClients }: ClientManagerProps) {
   }
 
   async function loadClients() {
-    const response = await fetch("/api/clients");
+    const res = await fetch("/api/clients");
 
-    if (!response.ok) {
+    if (!res.ok) {
       throw new Error("Could not load clients");
     }
 
-    setClients(await response.json());
+    setClients(await res.json());
   }
 
   async function saveClient(event: React.FormEvent<HTMLFormElement>) {
@@ -78,7 +77,7 @@ export function ClientManager({ initialClients }: ClientManagerProps) {
       ? `/api/clients/${encodeURIComponent(editingNumber)}`
       : "/api/clients";
 
-    const response = await fetch(endpoint, {
+    const res = await fetch(endpoint, {
       method: isEditing ? "PATCH" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
@@ -86,9 +85,9 @@ export function ClientManager({ initialClients }: ClientManagerProps) {
 
     setIsSaving(false);
 
-    if (!response.ok) {
-      const result = await response.json().catch(() => null);
-      setMessage(result?.error ?? "Could not save client");
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      setMessage(data?.error ?? "Could not save client");
       return;
     }
 
@@ -105,13 +104,13 @@ export function ClientManager({ initialClients }: ClientManagerProps) {
       return;
     }
 
-    const response = await fetch(`/api/clients/${encodeURIComponent(client.number)}`, {
+    const res = await fetch(`/api/clients/${encodeURIComponent(client.number)}`, {
       method: "DELETE",
     });
 
-    if (!response.ok) {
-      const result = await response.json().catch(() => null);
-      setMessage(result?.error ?? "Could not delete client");
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      setMessage(data?.error ?? "Could not delete client");
       return;
     }
 

@@ -1,50 +1,89 @@
-"use client"
-import { INav } from "@types/nav-t"
-import { AcademicCapIcon, Bars4Icon } from "@heroicons/react/24/outline"
-import { Link } from "next/link"
-import { useState } from "react"
+"use client";
 
-type IProps = { menu: INav[] }
+import Link from "next/link";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import type { NavGroup } from "@/types/nav-t";
 
-const HOST = "http://localhost:3000"
+const navGroups: NavGroup[] = [
+  {
+    label: "Clients",
+    items: [
+      { label: "Client List", href: "/clients" },
+      { label: "Client Details", href: "/clients/details" },
+      { label: "Client Orders", href: "/clients/orders" },
+    ],
+  },
+  {
+    label: "Orders",
+    items: [
+      { label: "Order List", href: "/orders" },
+      { label: "Expired Orders", href: "/orders/expired" },
+      { label: "Orders Expiring This Month", href: "/orders/expiring-this-month" },
+      { label: "Order Deadlines", href: "/orders/deadlines" },
+    ],
+  },
+  {
+    label: "Materials",
+    items: [
+      { label: "Material List", href: "/materials" },
+      { label: "Materials by Order", href: "/materials/by-order" },
+      { label: "Material Usage", href: "/materials/usage" },
+      { label: "Material Requirements", href: "/materials/requirements" },
+    ],
+  },
+  {
+    label: "Costs",
+    items: [
+      { label: "Order Prices", href: "/costs/order-prices" },
+      { label: "Material Costs", href: "/costs/material-costs" },
+      { label: "Total Material Costs", href: "/costs/total-material-costs" },
+    ],
+  },
+  {
+    label: "Reports",
+    items: [
+      { label: "Client Report", href: "/reports/clients" },
+      { label: "Order Report", href: "/reports/orders" },
+      { label: "Material Requirements Report", href: "/reports/material-requirements" },
+      { label: "Cost Summary", href: "/reports/cost-summary" },
+    ],
+  },
+];
 
-export function Nav(props: IProps) {
-  const [isVisible, setIsVisible] = useState<boolean>(false)
-  const { menu } = props
+export function Nav() {
   return (
-    <nav className="bg-white border-gray-200">
-      <div className="max-w-screen-xl flex flex-wrap items-center gap-x-4 justify-between mx-auto p-4">
-        <Link href={HOST} className="flex items-center space-x-3">
-          <div className="flex gap-x-2">
-            <AcademicCapIcon className="h-8 w-8 stroke-orange-700" />
-            <div className="text-2xl text-orange-700 font-bold">AAS</div>
-          </div>
-        </Link>
-        <button
-          onClick={() => setIsVisible(!isVisible)}
-          type="button"
-          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
-        >
-          <span className="sr-only">Open menu</span>
-          <Bars4Icon className="h-7 w-7 stroke-gray-800" />
-        </button>
-        <div
-          className={`w-full md:block md:w-auto ${isVisible ? "" : " hidden"}`}
-        >
-          <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white">
-            {menu.map((item) => (
-              <li key={item.slug}>
-                <Link
-                  href={item.slug}
-                  className="block py-2 px-3 text-gray-800 hover:no-underline hover:text-gray-900 visited:text-gray-800 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0"
-                >
-                  {item.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </nav>
-  )
+    <NavigationMenu viewport={false}>
+      <NavigationMenuList className="flex-wrap justify-start">
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+            <Link href="/">Home</Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        {navGroups.map((group) => (
+          <NavigationMenuItem key={group.label}>
+            <NavigationMenuTrigger>{group.label}</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-72 gap-1 p-2">
+                {group.items.map((item) => (
+                  <li key={item.href}>
+                    <NavigationMenuLink asChild>
+                      <Link href={item.href}>{item.label}</Link>
+                    </NavigationMenuLink>
+                  </li>
+                ))}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        ))}
+      </NavigationMenuList>
+    </NavigationMenu>
+  );
 }
