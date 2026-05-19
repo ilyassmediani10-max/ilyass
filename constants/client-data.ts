@@ -1,17 +1,8 @@
-export type Client = {
-  number: string;
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-  status: string;
-  totalSpent: string;
-  lastOrder: string;
-  deadline: string;
-};
+import type { Client } from "@/types/client-t";
 
 export const clients: Client[] = [
   {
+    id: "sample-1001",
     number: "CL-1001",
     name: "Amal Carter",
     phone: "+1 212 555 0184",
@@ -23,6 +14,7 @@ export const clients: Client[] = [
     deadline: "June 14, 2026",
   },
   {
+    id: "sample-1002",
     number: "CL-1002",
     name: "Noah Bennett",
     phone: "+1 646 555 0139",
@@ -34,6 +26,7 @@ export const clients: Client[] = [
     deadline: "May 28, 2026",
   },
   {
+    id: "sample-1003",
     number: "CL-1003",
     name: "Sara Haddad",
     phone: "+1 917 555 0167",
@@ -45,6 +38,7 @@ export const clients: Client[] = [
     deadline: "July 3, 2026",
   },
   {
+    id: "sample-1004",
     number: "CL-1004",
     name: "Leo Martinez",
     phone: "+1 718 555 0198",

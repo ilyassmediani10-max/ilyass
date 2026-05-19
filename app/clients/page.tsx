@@ -1,5 +1,5 @@
-import { ClientManager } from "./client-manager";
-import { getClients } from "./client-service";
+import { ClientManager } from "@/components/clients/client-manager";
+import { getClients } from "@/services/client-service";
 
 export default async function ClientListPage() {
   const clients = await getClients();

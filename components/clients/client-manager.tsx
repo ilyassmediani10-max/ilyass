@@ -11,7 +11,7 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-import type { Client } from "./client-data";
+import type { Client } from "@/types/client-t";
 
 const blankClient: Client = {
   number: "",
@@ -32,11 +32,11 @@ type IProps = {
 export function ClientManager({ initialClients }: IProps) {
   const [clients, setClients] = useState<Client[]>(initialClients);
   const [form, setForm] = useState<Client>(blankClient);
-  const [editingNumber, setEditingNumber] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
-  const isEditing = editingNumber !== null;
+  const isEditing = editingId !== null;
   const sortedClients = [...clients].sort((a, b) => a.number.localeCompare(b.number));
 
   const inputClass =
@@ -48,13 +48,13 @@ export function ClientManager({ initialClients }: IProps) {
 
   function resetForm() {
     setForm(blankClient);
-    setEditingNumber(null);
+    setEditingId(null);
     setMessage("");
   }
 
   function editClient(client: Client) {
     setForm(client);
-    setEditingNumber(client.number);
+    setEditingId(client.id ?? null);
     setMessage("");
   }
 
@@ -74,12 +74,12 @@ export function ClientManager({ initialClients }: IProps) {
     setMessage("");
 
     const endpoint = isEditing
-      ? `/api/clients/${encodeURIComponent(editingNumber)}`
+      ? `/api/clients/${encodeURIComponent(editingId ?? "")}`
       : "/api/clients";
 
     try {
       const res = await fetch(endpoint, {
-        method: isEditing ? "PATCH" : "POST",
+        method: isEditing ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
@@ -93,7 +93,7 @@ export function ClientManager({ initialClients }: IProps) {
       await loadClients();
       setMessage(isEditing ? "Client updated." : "Client added.");
       setForm(blankClient);
-      setEditingNumber(null);
+      setEditingId(null);
     } finally {
       setIsSaving(false);
     }
@@ -106,7 +106,12 @@ export function ClientManager({ initialClients }: IProps) {
       return;
     }
 
-    const res = await fetch(`/api/clients/${encodeURIComponent(client.number)}`, {
+    if (!client.id) {
+      setMessage("Client id is missing.");
+      return;
+    }
+
+    const res = await fetch(`/api/clients/${encodeURIComponent(client.id)}`, {
       method: "DELETE",
     });
 
@@ -256,7 +261,7 @@ export function ClientManager({ initialClients }: IProps) {
 
         {sortedClients.map((client) => (
           <article
-            key={client.number}
+            key={client.id ?? client.number}
             className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
           >
             <div className="flex items-start justify-between gap-4">

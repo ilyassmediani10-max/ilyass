@@ -1,8 +1,6 @@
-import { getClients } from "../client-service";
-import { ClientProfile } from "./client-profile";
+import { ClientProfile } from "@/components/clients/client-profile";
+import { getClients } from "@/services/client-service";
 
 export default async function ClientDetailsPage() {
-  const clients = await getClients();
-
-  return <ClientProfile clients={clients} />;
+  return <ClientProfile clients={await getClients()} />;
 }

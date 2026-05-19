@@ -8,7 +8,7 @@ import {
   MapPin,
   UserRound,
 } from "lucide-react";
-import type { Client } from "../client-data";
+import type { Client } from "@/types/client-t";
 
 type IProps = {
   clients: Client[];
