@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Manage renovation clients, orders, materials, and costs.",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
