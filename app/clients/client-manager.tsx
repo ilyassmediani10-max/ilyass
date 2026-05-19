@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   Edit3,
   Mail,
@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import type { Client } from "./client-data";
 
-const emptyClient: Client = {
+const blankClient: Client = {
   number: "",
   name: "",
   phone: "",
@@ -31,28 +31,28 @@ type IProps = {
 
 export function ClientManager({ initialClients }: IProps) {
   const [clients, setClients] = useState<Client[]>(initialClients);
-  const [form, setForm] = useState<Client>(emptyClient);
+  const [form, setForm] = useState<Client>(blankClient);
   const [editingNumber, setEditingNumber] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
-  const sortedClients = useMemo(() => {
-    return [...clients].sort((a, b) => a.number.localeCompare(b.number));
-  }, [clients]);
-
   const isEditing = editingNumber !== null;
+  const sortedClients = [...clients].sort((a, b) => a.number.localeCompare(b.number));
 
-  function updateField(field: keyof Client, value: string) {
+  const inputClass =
+    "rounded-md border border-slate-200 px-3 py-2 font-normal text-slate-950 outline-none focus:border-blue-500 disabled:bg-slate-100";
+
+  function setValue(field: keyof Client, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
   }
 
   function resetForm() {
-    setForm(emptyClient);
+    setForm(blankClient);
     setEditingNumber(null);
     setMessage("");
   }
 
-  function startEditing(client: Client) {
+  function editClient(client: Client) {
     setForm(client);
     setEditingNumber(client.number);
     setMessage("");
@@ -68,8 +68,8 @@ export function ClientManager({ initialClients }: IProps) {
     setClients(await res.json());
   }
 
-  async function saveClient(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function saveClient(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     setIsSaving(true);
     setMessage("");
 
@@ -77,24 +77,26 @@ export function ClientManager({ initialClients }: IProps) {
       ? `/api/clients/${encodeURIComponent(editingNumber)}`
       : "/api/clients";
 
-    const res = await fetch(endpoint, {
-      method: isEditing ? "PATCH" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+    try {
+      const res = await fetch(endpoint, {
+        method: isEditing ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    setIsSaving(false);
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        setMessage(data?.error ?? "Could not save client");
+        return;
+      }
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => null);
-      setMessage(data?.error ?? "Could not save client");
-      return;
+      await loadClients();
+      setMessage(isEditing ? "Client updated." : "Client added.");
+      setForm(blankClient);
+      setEditingNumber(null);
+    } finally {
+      setIsSaving(false);
     }
-
-    await loadClients();
-    setMessage(isEditing ? "Client updated." : "Client added.");
-    setForm(emptyClient);
-    setEditingNumber(null);
   }
 
   async function deleteClient(client: Client) {
@@ -124,9 +126,6 @@ export function ClientManager({ initialClients }: IProps) {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="font-semibold">{isEditing ? "Update Client" : "Add Client"}</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Changes are saved directly in MongoDB Atlas.
-            </p>
           </div>
           {isEditing ? (
             <button
@@ -145,10 +144,10 @@ export function ClientManager({ initialClients }: IProps) {
             Client number
             <input
               value={form.number}
-              onChange={(event) => updateField("number", event.target.value)}
+              onChange={(event) => setValue("number", event.target.value)}
               required
               disabled={isEditing}
-              className="rounded-md border border-slate-200 px-3 py-2 font-normal text-slate-950 outline-none focus:border-blue-500 disabled:bg-slate-100"
+              className={inputClass}
               placeholder="CL-1005"
             />
           </label>
@@ -156,9 +155,9 @@ export function ClientManager({ initialClients }: IProps) {
             Name
             <input
               value={form.name}
-              onChange={(event) => updateField("name", event.target.value)}
+              onChange={(event) => setValue("name", event.target.value)}
               required
-              className="rounded-md border border-slate-200 px-3 py-2 font-normal text-slate-950 outline-none focus:border-blue-500"
+              className={inputClass}
               placeholder="Client name"
             />
           </label>
@@ -166,9 +165,9 @@ export function ClientManager({ initialClients }: IProps) {
             Phone
             <input
               value={form.phone}
-              onChange={(event) => updateField("phone", event.target.value)}
+              onChange={(event) => setValue("phone", event.target.value)}
               required
-              className="rounded-md border border-slate-200 px-3 py-2 font-normal text-slate-950 outline-none focus:border-blue-500"
+              className={inputClass}
               placeholder="+1 555 000 0000"
             />
           </label>
@@ -177,9 +176,9 @@ export function ClientManager({ initialClients }: IProps) {
             <input
               type="email"
               value={form.email}
-              onChange={(event) => updateField("email", event.target.value)}
+              onChange={(event) => setValue("email", event.target.value)}
               required
-              className="rounded-md border border-slate-200 px-3 py-2 font-normal text-slate-950 outline-none focus:border-blue-500"
+              className={inputClass}
               placeholder="client@example.com"
             />
           </label>
@@ -187,9 +186,9 @@ export function ClientManager({ initialClients }: IProps) {
             Address
             <input
               value={form.address}
-              onChange={(event) => updateField("address", event.target.value)}
+              onChange={(event) => setValue("address", event.target.value)}
               required
-              className="rounded-md border border-slate-200 px-3 py-2 font-normal text-slate-950 outline-none focus:border-blue-500"
+              className={inputClass}
               placeholder="Street, city"
             />
           </label>
@@ -197,8 +196,8 @@ export function ClientManager({ initialClients }: IProps) {
             Status
             <select
               value={form.status}
-              onChange={(event) => updateField("status", event.target.value)}
-              className="rounded-md border border-slate-200 px-3 py-2 font-normal text-slate-950 outline-none focus:border-blue-500"
+              onChange={(event) => setValue("status", event.target.value)}
+              className={inputClass}
             >
               <option>Active</option>
               <option>Pending</option>
@@ -210,8 +209,8 @@ export function ClientManager({ initialClients }: IProps) {
             Total spent
             <input
               value={form.totalSpent}
-              onChange={(event) => updateField("totalSpent", event.target.value)}
-              className="rounded-md border border-slate-200 px-3 py-2 font-normal text-slate-950 outline-none focus:border-blue-500"
+              onChange={(event) => setValue("totalSpent", event.target.value)}
+              className={inputClass}
               placeholder="$0"
             />
           </label>
@@ -219,8 +218,8 @@ export function ClientManager({ initialClients }: IProps) {
             Last order
             <input
               value={form.lastOrder}
-              onChange={(event) => updateField("lastOrder", event.target.value)}
-              className="rounded-md border border-slate-200 px-3 py-2 font-normal text-slate-950 outline-none focus:border-blue-500"
+              onChange={(event) => setValue("lastOrder", event.target.value)}
+              className={inputClass}
               placeholder="Kitchen renovation"
             />
           </label>
@@ -228,8 +227,8 @@ export function ClientManager({ initialClients }: IProps) {
             Deadline
             <input
               value={form.deadline}
-              onChange={(event) => updateField("deadline", event.target.value)}
-              className="rounded-md border border-slate-200 px-3 py-2 font-normal text-slate-950 outline-none focus:border-blue-500"
+              onChange={(event) => setValue("deadline", event.target.value)}
+              className={inputClass}
               placeholder="June 20, 2026"
             />
           </label>
@@ -293,7 +292,7 @@ export function ClientManager({ initialClients }: IProps) {
             <div className="mt-5 flex flex-wrap gap-2">
               <button
                 type="button"
-                onClick={() => startEditing(client)}
+                onClick={() => editClient(client)}
                 className="inline-flex items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
               >
                 <Edit3 size={15} />

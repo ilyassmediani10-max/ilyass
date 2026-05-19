@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { getDatabase } from "@/utils/mongodb";
 import type { Client } from "@/app/clients/client-data";
 
-type RouteContext = {
+type IContext = {
   params: Promise<{
     clientNumber: string;
   }>;
 };
 
-function cleanClient(client: Client): Client {
+function trimClient(client: Client): Client {
   return {
     number: client.number.trim(),
     name: client.name.trim(),
@@ -22,10 +22,11 @@ function cleanClient(client: Client): Client {
   };
 }
 
-export async function PATCH(request: Request, context: RouteContext) {
+export async function PATCH(request: Request, context: IContext) {
   const { clientNumber } = await context.params;
-  const client = cleanClient((await request.json()) as Client);
-  const database = await getDatabase();
+  const number = decodeURIComponent(clientNumber);
+  const client = trimClient((await request.json()) as Client);
+  const db = await getDatabase();
 
   if (!client.name || !client.number) {
     return NextResponse.json(
@@ -34,12 +35,9 @@ export async function PATCH(request: Request, context: RouteContext) {
     );
   }
 
-  const result = await database
+  const result = await db
     .collection<Client>("clients")
-    .updateOne(
-      { number: decodeURIComponent(clientNumber) },
-      { $set: { ...client, number: decodeURIComponent(clientNumber) } },
-    );
+    .updateOne({ number }, { $set: { ...client, number } });
 
   if (result.matchedCount === 0) {
     return NextResponse.json({ error: "Client not found." }, { status: 404 });
@@ -48,10 +46,10 @@ export async function PATCH(request: Request, context: RouteContext) {
   return NextResponse.json({ updated: result.modifiedCount });
 }
 
-export async function DELETE(_request: Request, context: RouteContext) {
+export async function DELETE(_request: Request, context: IContext) {
   const { clientNumber } = await context.params;
-  const database = await getDatabase();
-  const result = await database
+  const db = await getDatabase();
+  const result = await db
     .collection<Client>("clients")
     .deleteOne({ number: decodeURIComponent(clientNumber) });
 

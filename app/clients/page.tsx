@@ -11,7 +11,6 @@ export default async function ClientListPage() {
           <p className="text-sm font-medium text-blue-600">Clients</p>
           <h1 className="text-3xl font-bold">Client List</h1>
         </div>
-        <p className="text-sm text-slate-500">{clients.length} clients stored</p>
       </div>
 
       <ClientManager initialClients={clients} />

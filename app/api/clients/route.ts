@@ -6,7 +6,7 @@ type ClientDocument = Client & {
   _id?: unknown;
 };
 
-function cleanClient(client: Client): Client {
+function trimClient(client: Client): Client {
   return {
     number: client.number.trim(),
     name: client.name.trim(),
@@ -35,8 +35,8 @@ function toClient(document: ClientDocument): Client {
 }
 
 export async function GET() {
-  const database = await getDatabase();
-  const clients = await database
+  const db = await getDatabase();
+  const clients = await db
     .collection<ClientDocument>("clients")
     .find({})
     .sort({ number: 1 })
@@ -46,8 +46,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const client = cleanClient((await request.json()) as Client);
-  const database = await getDatabase();
+  const client = trimClient((await request.json()) as Client);
+  const db = await getDatabase();
 
   if (!client.number || !client.name) {
     return NextResponse.json(
@@ -56,18 +56,18 @@ export async function POST(request: Request) {
     );
   }
 
-  const existingClient = await database
+  const existing = await db
     .collection<Client>("clients")
     .findOne({ number: client.number });
 
-  if (existingClient) {
+  if (existing) {
     return NextResponse.json(
       { error: "A client with this number already exists." },
       { status: 409 },
     );
   }
 
-  const result = await database.collection<Client>("clients").insertOne(client);
+  const result = await db.collection<Client>("clients").insertOne(client);
 
   return NextResponse.json({ insertedId: result.insertedId }, { status: 201 });
 }
