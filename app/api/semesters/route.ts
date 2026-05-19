@@ -1,9 +1,12 @@
-const semesters = [
-  { id: 1, title: "Semester 1" },
-  { id: 2, title: "Semester 2" },
-  { id: 3, title: "Semester 3" },
-];
+import { ISemester } from "@/types/semester-t"
+import { type NextRequest } from "next/server"
 
-export function GET() {
-  return Response.json(semesters);
+const semestersDb: ISemester[] = [
+  { id: 1, name: "First" },
+  { id: 2, name: "Second" },
+  { id: 3, name: "Third" },
+]
+
+export function GET(request: NextRequest) {
+  return Response.json(semestersDb)
 }
