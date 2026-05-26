@@ -3,15 +3,13 @@ import type { Client } from "@/types/client-t";
 
 const clientSchema = new Schema<Client>(
   {
-    number: { type: String, required: true, unique: true, trim: true },
-    name: { type: String, required: true, trim: true },
-    phone: { type: String, default: "", trim: true },
-    email: { type: String, default: "", trim: true },
-    address: { type: String, default: "", trim: true },
-    status: { type: String, default: "", trim: true },
-    totalSpent: { type: String, default: "", trim: true },
-    lastOrder: { type: String, default: "", trim: true },
-    deadline: { type: String, default: "", trim: true },
+    apartment: { type: Number, required: true, min: 0 },
+    city: { type: String, required: true, trim: true },
+    clientNumber: { type: Number, required: true, unique: true, min: 1 },
+    firstName: { type: String, required: true, trim: true },
+    houseNumber: { type: String, required: true, trim: true },
+    lastName: { type: String, required: true, trim: true },
+    street: { type: String, required: true, trim: true },
   },
   {
     collection: "clients",

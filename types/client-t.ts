@@ -1,12 +1,10 @@
 export type Client = {
+  apartment: number;
+  city: string;
+  clientNumber: number;
+  firstName: string;
+  houseNumber: string;
   id?: string;
-  number: string;
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-  status: string;
-  totalSpent: string;
-  lastOrder: string;
-  deadline: string;
+  lastName: string;
+  street: string;
 };

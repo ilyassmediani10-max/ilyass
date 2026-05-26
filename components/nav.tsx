@@ -11,8 +11,24 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { navGroups } from "@/constants/nav-data";
+import type { UserRole } from "@/types/auth-t";
+import { filterNavGroups } from "@/utils/access-control";
 
-export function Nav() {
+type IProps = {
+  role: UserRole | null;
+};
+
+export function Nav({ role }: IProps) {
+  if (!role) {
+    return null;
+  }
+
+  const visibleGroups = filterNavGroups(navGroups, role);
+
+  if (visibleGroups.length === 0) {
+    return null;
+  }
+
   return (
     <NavigationMenu viewport={false}>
       <NavigationMenuList className="flex-wrap justify-start">
@@ -21,7 +37,7 @@ export function Nav() {
             <Link href="/">Home</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        {navGroups.map((group) => (
+        {visibleGroups.map((group) => (
           <NavigationMenuItem key={group.label}>
             <NavigationMenuTrigger>{group.label}</NavigationMenuTrigger>
             <NavigationMenuContent>

@@ -1,320 +1,104 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Edit3,
-  Mail,
-  MapPin,
-  Phone,
-  Plus,
-  Trash2,
-  UserRound,
-  X,
-} from "lucide-react";
+import { Plus } from "lucide-react";
 import type { Client } from "@/types/client-t";
-
-const blankClient: Client = {
-  number: "",
-  name: "",
-  phone: "",
-  email: "",
-  address: "",
-  status: "Active",
-  totalSpent: "",
-  lastOrder: "",
-  deadline: "",
-};
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { ClientFormDialog } from "@/components/clients/client-form-dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { useClientFilter } from "@/hooks/use-client-filter";
+import { useClientForm } from "@/hooks/use-client-form";
+import { getClientAddress, getClientName } from "@/utils/client-mappers";
 
 type IProps = {
   initialClients: Client[];
+  canEdit?: boolean;
 };
 
-export function ClientManager({ initialClients }: IProps) {
-  const [clients, setClients] = useState<Client[]>(initialClients);
-  const [form, setForm] = useState<Client>(blankClient);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [message, setMessage] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
-
-  const isEditing = editingId !== null;
-  const sortedClients = [...clients].sort((a, b) => a.number.localeCompare(b.number));
-
-  const inputClass =
-    "rounded-md border border-slate-200 px-3 py-2 font-normal text-slate-950 outline-none focus:border-blue-500 disabled:bg-slate-100";
-
-  function setValue(field: keyof Client, value: string) {
-    setForm((current) => ({ ...current, [field]: value }));
-  }
-
-  function resetForm() {
-    setForm(blankClient);
-    setEditingId(null);
-    setMessage("");
-  }
-
-  function editClient(client: Client) {
-    setForm(client);
-    setEditingId(client.id ?? null);
-    setMessage("");
-  }
-
-  async function loadClients() {
-    const res = await fetch("/api/clients");
-
-    if (!res.ok) {
-      throw new Error("Could not load clients");
-    }
-
-    setClients(await res.json());
-  }
-
-  async function saveClient(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setIsSaving(true);
-    setMessage("");
-
-    const endpoint = isEditing
-      ? `/api/clients/${encodeURIComponent(editingId ?? "")}`
-      : "/api/clients";
-
-    try {
-      const res = await fetch(endpoint, {
-        method: isEditing ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        setMessage(data?.error ?? "Could not save client");
-        return;
-      }
-
-      await loadClients();
-      setMessage(isEditing ? "Client updated." : "Client added.");
-      setForm(blankClient);
-      setEditingId(null);
-    } finally {
-      setIsSaving(false);
-    }
-  }
-
-  async function deleteClient(client: Client) {
-    const shouldDelete = window.confirm(`Delete ${client.name}?`);
-
-    if (!shouldDelete) {
-      return;
-    }
-
-    if (!client.id) {
-      setMessage("Client id is missing.");
-      return;
-    }
-
-    const res = await fetch(`/api/clients/${encodeURIComponent(client.id)}`, {
-      method: "DELETE",
-    });
-
-    if (!res.ok) {
-      const data = await res.json().catch(() => null);
-      setMessage(data?.error ?? "Could not delete client");
-      return;
-    }
-
-    await loadClients();
-    setMessage("Client deleted.");
-  }
+export function ClientManager({ initialClients, canEdit = true }: IProps) {
+  const manager = useClientForm(initialClients);
+  const { filteredClients, query, setQuery, stats } = useClientFilter(manager.clients);
 
   return (
     <>
-      <section className="mt-8 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h2 className="font-semibold">{isEditing ? "Update Client" : "Add Client"}</h2>
-          </div>
-          {isEditing ? (
-            <button
-              type="button"
-              onClick={resetForm}
-              className="inline-flex size-9 items-center justify-center rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50"
-              aria-label="Cancel editing"
-            >
-              <X size={18} />
-            </button>
-          ) : null}
-        </div>
-
-        <form onSubmit={saveClient} className="mt-5 grid gap-4 md:grid-cols-2">
-          <label className="grid gap-1 text-sm font-medium text-slate-700">
-            Client number
-            <input
-              value={form.number}
-              onChange={(event) => setValue("number", event.target.value)}
-              required
-              disabled={isEditing}
-              className={inputClass}
-              placeholder="CL-1005"
-            />
-          </label>
-          <label className="grid gap-1 text-sm font-medium text-slate-700">
-            Name
-            <input
-              value={form.name}
-              onChange={(event) => setValue("name", event.target.value)}
-              required
-              className={inputClass}
-              placeholder="Client name"
-            />
-          </label>
-          <label className="grid gap-1 text-sm font-medium text-slate-700">
-            Phone
-            <input
-              value={form.phone}
-              onChange={(event) => setValue("phone", event.target.value)}
-              required
-              className={inputClass}
-              placeholder="+1 555 000 0000"
-            />
-          </label>
-          <label className="grid gap-1 text-sm font-medium text-slate-700">
-            Email
-            <input
-              type="email"
-              value={form.email}
-              onChange={(event) => setValue("email", event.target.value)}
-              required
-              className={inputClass}
-              placeholder="client@example.com"
-            />
-          </label>
-          <label className="grid gap-1 text-sm font-medium text-slate-700">
-            Address
-            <input
-              value={form.address}
-              onChange={(event) => setValue("address", event.target.value)}
-              required
-              className={inputClass}
-              placeholder="Street, city"
-            />
-          </label>
-          <label className="grid gap-1 text-sm font-medium text-slate-700">
-            Status
-            <select
-              value={form.status}
-              onChange={(event) => setValue("status", event.target.value)}
-              className={inputClass}
-            >
-              <option>Active</option>
-              <option>Pending</option>
-              <option>Completed</option>
-              <option>Paused</option>
-            </select>
-          </label>
-          <label className="grid gap-1 text-sm font-medium text-slate-700">
-            Total spent
-            <input
-              value={form.totalSpent}
-              onChange={(event) => setValue("totalSpent", event.target.value)}
-              className={inputClass}
-              placeholder="$0"
-            />
-          </label>
-          <label className="grid gap-1 text-sm font-medium text-slate-700">
-            Last order
-            <input
-              value={form.lastOrder}
-              onChange={(event) => setValue("lastOrder", event.target.value)}
-              className={inputClass}
-              placeholder="Kitchen renovation"
-            />
-          </label>
-          <label className="grid gap-1 text-sm font-medium text-slate-700 md:col-span-2">
-            Deadline
-            <input
-              value={form.deadline}
-              onChange={(event) => setValue("deadline", event.target.value)}
-              className={inputClass}
-              placeholder="June 20, 2026"
-            />
-          </label>
-
-          <div className="flex flex-wrap items-center gap-3 md:col-span-2">
-            <button
-              type="submit"
-              disabled={isSaving}
-              className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
-            >
-              {isEditing ? <Edit3 size={16} /> : <Plus size={16} />}
-              {isSaving ? "Saving..." : isEditing ? "Update Client" : "Add Client"}
-            </button>
-            {message ? <p className="text-sm text-slate-600">{message}</p> : null}
-          </div>
-        </form>
-      </section>
-
-      <section className="mt-8 grid gap-4 md:grid-cols-2">
-        {sortedClients.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center text-slate-500 md:col-span-2">
-            No clients in MongoDB yet.
-          </div>
+      <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        {manager.message ? (
+          <p className="text-sm text-slate-600">{manager.message}</p>
+        ) : (
+          <span />
+        )}
+        {canEdit ? (
+          <Button type="button" onClick={manager.openNewClient}>
+            <Plus size={16} />
+            Add Client
+          </Button>
         ) : null}
+      </div>
 
-        {sortedClients.map((client) => (
-          <article
-            key={client.id ?? client.number}
-            className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="flex size-11 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
-                  <UserRound size={22} />
-                </div>
-                <div>
-                  <h2 className="font-semibold">{client.name}</h2>
-                  <p className="text-sm text-slate-500">{client.number}</p>
-                </div>
-              </div>
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-                {client.status}
-              </span>
-            </div>
+      <Card className="mt-6 overflow-hidden">
+        <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <CardTitle>Client List ({stats.total})</CardTitle>
+          <Input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search clients"
+            className="sm:w-72"
+          />
+        </CardHeader>
+        <ClientTable clients={filteredClients} />
+      </Card>
 
-            <div className="mt-5 space-y-3 text-sm text-slate-600">
-              <p className="flex items-center gap-2">
-                <Phone size={16} />
-                {client.phone}
-              </p>
-              <p className="flex items-center gap-2">
-                <Mail size={16} />
-                {client.email}
-              </p>
-              <p className="flex items-center gap-2">
-                <MapPin size={16} />
-                {client.address}
-              </p>
-            </div>
-
-            <div className="mt-5 flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => editClient(client)}
-                className="inline-flex items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-              >
-                <Edit3 size={15} />
-                Update
-              </button>
-              <button
-                type="button"
-                onClick={() => deleteClient(client)}
-                className="inline-flex items-center gap-2 rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
-              >
-                <Trash2 size={15} />
-                Delete
-              </button>
-            </div>
-          </article>
-        ))}
-      </section>
+      {manager.isDialogOpen ? (
+        <ClientFormDialog
+          cities={manager.cities}
+          client={manager.form}
+          isSaving={manager.isSaving}
+          onClose={manager.closeDialog}
+          onSave={manager.saveClient}
+          onValueChange={manager.setValue}
+          streetOptions={manager.streetOptions}
+        />
+      ) : null}
     </>
+  );
+}
+
+function ClientTable({ clients }: { clients: Client[] }) {
+  return (
+    <div className="overflow-x-auto">
+      <Table className="min-w-[900px]">
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead>Client</TableHead>
+            <TableHead>Client number</TableHead>
+            <TableHead>Address</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {clients.length === 0 ? (
+            <TableRow>
+              <TableCell className="py-10 text-center text-slate-500" colSpan={3}>
+                No clients found.
+              </TableCell>
+            </TableRow>
+          ) : null}
+          {clients.map((client) => (
+            <TableRow key={client.id ?? client.clientNumber}>
+              <TableCell className="font-medium text-slate-950">{getClientName(client)}</TableCell>
+              <TableCell>{client.clientNumber}</TableCell>
+              <TableCell className="text-slate-600">{getClientAddress(client)}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

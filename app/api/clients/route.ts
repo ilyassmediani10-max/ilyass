@@ -1,37 +1,45 @@
-import { NextResponse } from "next/server";
-import { ClientModel } from "@/models/client-model";
-import { toClient, trimClient } from "@/utils/client-mappers";
-import { connectMongoose } from "@/utils/mongoose-client";
-import type { Client } from "@/types/client-t";
+import { createClient, getClients } from "@/services/client-service";
+import { clientSchema, type ClientInput } from "@/validators/client-validator";
+import { requireAdmin } from "@/utils/access-control";
 
-export async function GET() {
-  await connectMongoose();
-  const clients = await ClientModel.find({}).sort({ number: 1 }).lean();
+export async function GET(request: Request) {
+  try {
+    const lastName = new URL(request.url).searchParams.get("lastName") ?? undefined;
+    const clients = await getClients(lastName);
 
-  return NextResponse.json(clients.map(toClient));
-}
-
-export async function POST(request: Request) {
-  const client = trimClient((await request.json()) as Client);
-  await connectMongoose();
-
-  if (!client.number || !client.name) {
-    return NextResponse.json(
-      { error: "Client number and name are required." },
+    return Response.json(clients);
+  } catch (error) {
+    return Response.json(
+      {
+        message:
+          error instanceof Error ? error.message : "Could not load clients",
+      },
       { status: 400 },
     );
   }
+}
 
-  const existing = await ClientModel.findOne({ number: client.number }).lean();
+export async function POST(request: Request) {
+  try {
+    await requireAdmin(request);
 
-  if (existing) {
-    return NextResponse.json(
-      { error: "A client with this number already exists." },
-      { status: 409 },
+    const body: ClientInput = clientSchema.parse(await request.json());
+    const insertedId = await createClient(body);
+
+    return Response.json(
+      {
+        insertedId,
+        message: "Client created successfully",
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    return Response.json(
+      {
+        message:
+          error instanceof Error ? error.message : "Could not create client",
+      },
+      { status: 400 },
     );
   }
-
-  const result = await ClientModel.create(client);
-
-  return NextResponse.json({ insertedId: result._id }, { status: 201 });
 }

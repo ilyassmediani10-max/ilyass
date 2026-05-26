@@ -1,7 +1,9 @@
 import { ClientManager } from "@/components/clients/client-manager";
 import { getClients } from "@/services/client-service";
+import { getCurrentRole } from "@/utils/server-auth";
 
 export default async function ClientListPage() {
+  const role = await getCurrentRole();
   const clients = await getClients();
 
   return (
@@ -13,7 +15,7 @@ export default async function ClientListPage() {
         </div>
       </div>
 
-      <ClientManager initialClients={clients} />
+      <ClientManager initialClients={clients} canEdit={role === "ADMIN"} />
     </main>
   );
 }
