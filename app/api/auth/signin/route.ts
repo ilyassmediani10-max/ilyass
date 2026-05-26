@@ -1,10 +1,11 @@
 import { signIn } from "@/services/auth-service";
 import { AUTH_COOKIE } from "@/utils/session-cookie";
-import { authSchema, type AuthInput } from "@/validators/auth-validator";
+import { signInSchema } from "@/validators/auth-validator";
+import { ZodError } from "zod";
 
 export async function POST(request: Request) {
   try {
-    const body: AuthInput = authSchema.parse(await request.json());
+    const body = signInSchema.parse(await request.json());
     const session = await signIn(body);
 
     return Response.json(
@@ -19,6 +20,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         message:
+          error instanceof ZodError ? (error.issues[0]?.message ?? "Check your sign in details.") :
           error instanceof Error ? error.message : "Could not sign in",
       },
       { status: 400 },

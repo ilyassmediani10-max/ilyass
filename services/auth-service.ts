@@ -3,9 +3,9 @@ import type { UserRole } from "@/types/auth-t";
 import { connectMongoose } from "@/utils/mongoose-client";
 import { hashPassword, verifyPassword } from "@/utils/password";
 import { createSessionCookie } from "@/utils/session-cookie";
-import type { AuthInput } from "@/validators/auth-validator";
+import type { SignInInput, SignUpInput } from "@/validators/auth-validator";
 
-export async function signIn(input: AuthInput) {
+export async function signIn(input: SignInInput) {
   const email = input.email.trim().toLowerCase();
 
   await connectMongoose();
@@ -29,9 +29,9 @@ export async function signIn(input: AuthInput) {
   };
 }
 
-export async function signUp(input: AuthInput) {
+export async function signUp(input: SignUpInput) {
   const email = input.email.trim().toLowerCase();
-  const name = input.name?.trim() ?? "";
+  const name = input.name.trim();
 
   if (!name) {
     throw new Error("Name is required.");

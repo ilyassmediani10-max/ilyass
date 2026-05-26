@@ -1,4 +1,4 @@
-import type { AuthInput } from "@/validators/auth-validator";
+import type { SignInInput, SignUpInput } from "@/validators/auth-validator";
 
 async function parseResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
@@ -9,7 +9,7 @@ async function parseResponse<T>(response: Response): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export function signIn(input: AuthInput) {
+export function signIn(input: SignInInput) {
   return fetch("/api/auth/signin", {
     body: JSON.stringify(input),
     headers: { "Content-Type": "application/json" },
@@ -17,7 +17,7 @@ export function signIn(input: AuthInput) {
   }).then((response) => parseResponse<{ role: string }>(response));
 }
 
-export function signUp(input: AuthInput) {
+export function signUp(input: SignUpInput) {
   return fetch("/api/auth/signup", {
     body: JSON.stringify(input),
     headers: { "Content-Type": "application/json" },

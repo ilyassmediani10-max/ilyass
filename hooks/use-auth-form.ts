@@ -21,8 +21,12 @@ export function useAuthForm(mode: AuthMode) {
     setMessage("");
 
     try {
-      const payload = { email, name, password };
-      await (mode === "signin" ? signIn(payload) : signUp(payload));
+      if (mode === "signin") {
+        await signIn({ email, password });
+      } else {
+        await signUp({ email, name, password });
+      }
+
       router.push("/");
       router.refresh();
     } catch (error) {
