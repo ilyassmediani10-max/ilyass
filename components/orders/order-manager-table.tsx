@@ -42,7 +42,7 @@ export function OrderManagerTable({ canEdit, onDelete, onEdit, orders }: IProps)
           <TableBody>
             {orders.length === 0 ? (
               <TableRow>
-                <TableCell className="py-10 text-center text-slate-500" colSpan={canEdit ? 7 : 6}>
+                <TableCell className="py-10 text-center text-muted-foreground" colSpan={canEdit ? 7 : 6}>
                   No orders found.
                 </TableCell>
               </TableRow>
@@ -74,14 +74,14 @@ function OrderManagerRow({ canEdit, onDelete, onEdit, order }: RowProps) {
 
   return (
     <TableRow>
-      <TableCell className="font-medium text-slate-950">{order.number}</TableCell>
-      <TableCell className="text-slate-700">{order.clientName}</TableCell>
-      <TableCell className="text-slate-600">{order.service}</TableCell>
-      <TableCell className="text-slate-600">{showDate(order.deadline)}</TableCell>
-      <TableCell className="text-right font-medium text-slate-950">
+      <TableCell className="font-medium text-foreground">{order.number}</TableCell>
+      <TableCell>{order.clientName}</TableCell>
+      <TableCell className="text-muted-foreground">{order.service}</TableCell>
+      <TableCell className="text-muted-foreground">{showDate(order.deadline)}</TableCell>
+      <TableCell className="text-right font-medium text-foreground">
         {money.format(order.price)}
       </TableCell>
-      <TableCell className="text-slate-600">{order.status}</TableCell>
+      <TableCell className="text-muted-foreground">{order.status}</TableCell>
       {canEdit ? (
         <TableCell>
           <div className="flex justify-end gap-2">

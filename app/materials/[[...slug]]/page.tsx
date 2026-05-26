@@ -32,7 +32,7 @@ export default async function MaterialsPage({ params }: IProps) {
     const requirements = await getMaterialRequirements();
 
     return (
-      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-slate-950">
+      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
         <PageTitle section="Materials" title="Material Requirements" />
         <RequirementsTable requirements={requirements} />
       </main>
@@ -43,7 +43,7 @@ export default async function MaterialsPage({ params }: IProps) {
     const orders = await getOrders();
 
     return (
-      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-slate-950">
+      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
         <PageTitle
           section="Materials"
           title={slug[0] === "by-order" ? "Materials By Order" : "Material Usage"}
@@ -60,8 +60,8 @@ export default async function MaterialsPage({ params }: IProps) {
 function PageTitle({ section, title }: { section: string; title: string }) {
   return (
     <div>
-      <p className="text-sm font-medium text-blue-600">{section}</p>
-      <h1 className="mt-1 text-3xl font-bold">{title}</h1>
+      <p className="text-sm font-medium text-muted-foreground">{section}</p>
+      <h1 className="mt-1 text-3xl font-bold tracking-tight">{title}</h1>
     </div>
   );
 }
@@ -86,17 +86,17 @@ function RequirementsTable({
           <TableBody>
             {requirements.length === 0 ? (
               <TableRow>
-                <TableCell className="py-10 text-center text-slate-500" colSpan={4}>
+                <TableCell className="py-10 text-center text-muted-foreground" colSpan={4}>
                   No material requirements found.
                 </TableCell>
               </TableRow>
             ) : null}
             {requirements.map((item) => (
               <TableRow key={item.materialId}>
-                <TableCell className="font-medium text-slate-950">{item.name}</TableCell>
-                <TableCell className="text-slate-600">{item.unit}</TableCell>
+                <TableCell className="font-medium text-foreground">{item.name}</TableCell>
+                <TableCell className="text-muted-foreground">{item.unit}</TableCell>
                 <TableCell className="text-right">{item.quantity}</TableCell>
-                <TableCell className="text-right font-medium text-slate-950">
+                <TableCell className="text-right font-medium text-foreground">
                   {money.format(item.totalCost)}
                 </TableCell>
               </TableRow>

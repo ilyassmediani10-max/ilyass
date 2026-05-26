@@ -15,7 +15,7 @@ export default async function CostsPage({ params }: IProps) {
 
   if (slug[0] === "order-prices") {
     return (
-      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-slate-950">
+      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
         <PageTitle title="Order Prices" />
         <OrderTable orders={await getOrders()} />
       </main>
@@ -43,19 +43,19 @@ export default async function CostsPage({ params }: IProps) {
 function PageTitle({ title }: { title: string }) {
   return (
     <div>
-      <p className="text-sm font-medium text-blue-600">Costs</p>
-      <h1 className="mt-1 text-3xl font-bold">{title}</h1>
+      <p className="text-sm font-medium text-muted-foreground">Costs</p>
+      <h1 className="mt-1 text-3xl font-bold tracking-tight">{title}</h1>
     </div>
   );
 }
 
 function CostCard({ label, value }: { label: string; value: string }) {
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-10 text-slate-950">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
       <PageTitle title={label} />
       <Card className="mt-8">
         <CardContent>
-          <p className="text-4xl font-bold text-slate-950">{value}</p>
+          <p className="text-4xl font-bold tracking-tight text-foreground">{value}</p>
         </CardContent>
       </Card>
     </main>

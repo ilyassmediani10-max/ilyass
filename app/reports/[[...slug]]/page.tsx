@@ -17,7 +17,7 @@ export default async function ReportsPage({ params }: IProps) {
 
   if (slug[0] === "clients") {
     return (
-      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-slate-950">
+      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
         <PageTitle title="Client Report" />
         <ClientManager canEdit={false} initialClients={await getClients()} />
       </main>
@@ -28,7 +28,7 @@ export default async function ReportsPage({ params }: IProps) {
     const summary = await getOrderQuerySummary();
 
     return (
-      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-slate-950">
+      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
         <PageTitle title="Order Report" />
         <OrderTable orders={summary.orders} />
       </main>
@@ -39,14 +39,14 @@ export default async function ReportsPage({ params }: IProps) {
     const requirements = await getMaterialRequirements();
 
     return (
-      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-slate-950">
+      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
         <PageTitle title="Material Requirements Report" />
         <section className="mt-8 grid gap-4 md:grid-cols-2">
           {requirements.map((item) => (
             <Card key={item.materialId}>
               <CardContent>
-                <p className="font-medium text-slate-950">{item.name}</p>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="font-medium text-foreground">{item.name}</p>
+                <p className="mt-1 text-sm text-muted-foreground">
                   {item.quantity} {item.unit} planned
                 </p>
                 <p className="mt-3 text-lg font-semibold">{money.format(item.totalCost)}</p>
@@ -66,7 +66,7 @@ export default async function ReportsPage({ params }: IProps) {
     const orderTotal = summary.orders.reduce((sum, order) => sum + order.price, 0);
 
     return (
-      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-slate-950">
+      <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
         <PageTitle title="Cost Summary" />
         <section className="mt-8 grid gap-4 md:grid-cols-2">
           <SummaryCard label="Order Prices" value={money.format(orderTotal)} />
@@ -82,8 +82,8 @@ export default async function ReportsPage({ params }: IProps) {
 function PageTitle({ title }: { title: string }) {
   return (
     <div>
-      <p className="text-sm font-medium text-blue-600">Reports</p>
-      <h1 className="mt-1 text-3xl font-bold">{title}</h1>
+      <p className="text-sm font-medium text-muted-foreground">Reports</p>
+      <h1 className="mt-1 text-3xl font-bold tracking-tight">{title}</h1>
     </div>
   );
 }
@@ -92,8 +92,8 @@ function SummaryCard({ label, value }: { label: string; value: string }) {
   return (
     <Card>
       <CardContent>
-        <p className="text-sm text-slate-500">{label}</p>
-        <p className="mt-2 text-3xl font-bold text-slate-950">{value}</p>
+        <p className="text-sm text-muted-foreground">{label}</p>
+        <p className="mt-2 text-3xl font-bold tracking-tight text-foreground">{value}</p>
       </CardContent>
     </Card>
   );

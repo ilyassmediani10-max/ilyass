@@ -26,11 +26,11 @@ export function OrderManager({
   const manager = useOrderManager({ clients, filter, initialOrders });
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-10 text-slate-950">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-blue-600">Orders</p>
-          <h1 className="mt-1 text-3xl font-bold">{title}</h1>
+          <p className="text-sm font-medium text-muted-foreground">Orders</p>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight">{title}</h1>
         </div>
         {canEdit ? (
           <Button type="button" onClick={manager.openNewOrder}>
@@ -41,7 +41,7 @@ export function OrderManager({
       </div>
 
       {manager.message ? (
-        <div className="mt-5 rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+        <div className="mt-5 rounded-md border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
           {manager.message}
         </div>
       ) : null}

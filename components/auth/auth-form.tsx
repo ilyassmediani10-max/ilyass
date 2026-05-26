@@ -57,7 +57,7 @@ export function AuthForm({ mode }: IProps) {
               />
             </Label>
             {form.message ? (
-              <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
                 {form.message}
               </p>
             ) : null}
@@ -66,9 +66,9 @@ export function AuthForm({ mode }: IProps) {
               {form.isSubmitting ? "Please wait..." : isSignup ? "Sign Up" : "Sign In"}
             </Button>
           </form>
-          <p className="mt-5 text-sm text-slate-600">
+          <p className="mt-5 text-sm text-muted-foreground">
             {isSignup ? "Already have an account?" : "Need an account?"}{" "}
-            <Link className="font-medium text-blue-600 hover:text-blue-700" href={isSignup ? "/signin" : "/signup"}>
+            <Link className="font-medium text-foreground underline-offset-4 hover:underline" href={isSignup ? "/signin" : "/signup"}>
               {isSignup ? "Sign in" : "Sign up"}
             </Link>
           </p>

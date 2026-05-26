@@ -57,7 +57,7 @@ export function ClientFormDialog({
           </Label>
           <ClientField label="House number" value={client.houseNumber} onChange={(value) => onValueChange("houseNumber", value)} required />
           <ClientField label="Apartment" type="number" min="0" value={String(client.apartment || "")} onChange={(value) => onValueChange("apartment", value)} required />
-          <div className="flex justify-end gap-3 border-t border-slate-200 pt-4 md:col-span-2">
+          <div className="flex justify-end gap-3 border-t pt-4 md:col-span-2">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>

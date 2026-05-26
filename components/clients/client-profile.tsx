@@ -15,14 +15,14 @@ export function ClientProfile({ clients }: IProps) {
   const { matches, query, setQuery } = useClientLastNameSearch(clients);
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-10 text-slate-950">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-blue-600">Clients</p>
-          <h1 className="mt-1 text-3xl font-bold">Client Details</h1>
+          <p className="text-sm font-medium text-muted-foreground">Clients</p>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight">Client Details</h1>
         </div>
         <div className="relative sm:w-80">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -36,7 +36,7 @@ export function ClientProfile({ clients }: IProps) {
         {matches.length === 0 ? (
           <Card className="md:col-span-2">
             <CardContent>
-              <p className="text-sm text-slate-500">No clients found.</p>
+              <p className="text-sm text-muted-foreground">No clients found.</p>
             </CardContent>
           </Card>
         ) : null}
@@ -53,8 +53,8 @@ export function ClientProfile({ clients }: IProps) {
               <Detail label="Client number" value={String(client.clientNumber)} />
               <Detail label="First name" value={client.firstName} />
               <Detail label="Last name" value={client.lastName} />
-              <div className="flex gap-2 text-slate-600">
-                <MapPin size={16} className="mt-0.5 shrink-0 text-blue-600" />
+              <div className="flex gap-2 text-muted-foreground">
+                <MapPin size={16} className="mt-0.5 shrink-0 text-foreground" />
                 <span>{getClientAddress(client)}</span>
               </div>
             </CardContent>
@@ -68,8 +68,8 @@ export function ClientProfile({ clients }: IProps) {
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <p>
-      <span className="text-slate-500">{label}: </span>
-      <span className="font-medium text-slate-950">{value}</span>
+      <span className="text-muted-foreground">{label}: </span>
+      <span className="font-medium text-foreground">{value}</span>
     </p>
   );
 }

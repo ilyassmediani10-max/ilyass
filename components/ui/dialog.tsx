@@ -4,7 +4,7 @@ import { cn } from "@/utils/cn";
 export function Dialog({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4", className)}
+      className={cn("fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4 backdrop-blur-sm", className)}
       {...props}
     />
   );
@@ -13,7 +13,7 @@ export function Dialog({ className, ...props }: React.HTMLAttributes<HTMLDivElem
 export function DialogContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("w-full max-w-3xl rounded-lg border border-slate-200 bg-white shadow-xl", className)}
+      className={cn("w-full max-w-3xl rounded-lg border bg-background text-foreground shadow-lg", className)}
       {...props}
     />
   );
@@ -22,7 +22,7 @@ export function DialogContent({ className, ...props }: React.HTMLAttributes<HTML
 export function DialogHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("flex items-center justify-between border-b border-slate-200 px-5 py-4", className)}
+      className={cn("flex items-center justify-between border-b px-5 py-4", className)}
       {...props}
     />
   );

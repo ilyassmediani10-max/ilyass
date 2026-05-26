@@ -26,11 +26,11 @@ export function MaterialManager({ canEdit = true, initialMaterials }: IProps) {
   const manager = useMaterialManager(initialMaterials);
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-10 text-slate-950">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-blue-600">Materials</p>
-          <h1 className="mt-1 text-3xl font-bold">Material List</h1>
+          <p className="text-sm font-medium text-muted-foreground">Materials</p>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight">Material List</h1>
         </div>
         {canEdit ? (
           <Button type="button" onClick={manager.openNewMaterial}>
@@ -41,7 +41,7 @@ export function MaterialManager({ canEdit = true, initialMaterials }: IProps) {
       </div>
 
       {manager.message ? (
-        <div className="mt-5 rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+        <div className="mt-5 rounded-md border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
           {manager.message}
         </div>
       ) : null}
@@ -105,7 +105,7 @@ function MaterialTable({ canEdit, materials, onDelete, onEdit }: TableProps) {
         <TableBody>
           {materials.length === 0 ? (
             <TableRow>
-              <TableCell className="py-10 text-center text-slate-500" colSpan={canEdit ? 5 : 4}>
+              <TableCell className="py-10 text-center text-muted-foreground" colSpan={canEdit ? 5 : 4}>
                 No materials found.
               </TableCell>
             </TableRow>
@@ -141,12 +141,12 @@ function MaterialRow({
 
   return (
     <TableRow>
-      <TableCell className="font-medium text-slate-950">{material.name}</TableCell>
-      <TableCell className="text-slate-600">{material.unit}</TableCell>
-      <TableCell className="text-right font-medium text-slate-950">
+      <TableCell className="font-medium text-foreground">{material.name}</TableCell>
+      <TableCell className="text-muted-foreground">{material.unit}</TableCell>
+      <TableCell className="text-right font-medium text-foreground">
         {money.format(material.price)}
       </TableCell>
-      <TableCell className="text-slate-600">{material.description ?? "-"}</TableCell>
+      <TableCell className="text-muted-foreground">{material.description ?? "-"}</TableCell>
       {canEdit ? (
         <TableCell>
           <div className="flex justify-end gap-2">

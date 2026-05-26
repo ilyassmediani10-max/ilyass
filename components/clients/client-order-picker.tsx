@@ -25,14 +25,14 @@ export function ClientOrderPicker({ clients, orders }: IProps) {
   });
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-10 text-slate-950">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-blue-600">Clients</p>
-          <h1 className="mt-1 text-3xl font-bold">Client Orders</h1>
+          <p className="text-sm font-medium text-muted-foreground">Clients</p>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight">Client Orders</h1>
         </div>
         <div className="relative sm:w-80">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -46,8 +46,8 @@ export function ClientOrderPicker({ clients, orders }: IProps) {
         {matches.map((client) => (
           <Card key={client.id ?? client.clientNumber}>
             <CardContent>
-              <p className="font-medium text-slate-950">{getClientName(client)}</p>
-              <p className="mt-1 text-sm text-slate-500">Client #{client.clientNumber}</p>
+              <p className="font-medium text-foreground">{getClientName(client)}</p>
+              <p className="mt-1 text-sm text-muted-foreground">Client #{client.clientNumber}</p>
             </CardContent>
           </Card>
         ))}

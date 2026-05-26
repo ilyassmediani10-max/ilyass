@@ -30,7 +30,7 @@ export function OrderTable({ orders }: IProps) {
           <TableBody>
             {orders.length === 0 ? (
               <TableRow>
-                <TableCell className="py-10 text-center text-slate-500" colSpan={4}>
+                <TableCell className="py-10 text-center text-muted-foreground" colSpan={4}>
                   No orders found.
                 </TableCell>
               </TableRow>
@@ -38,12 +38,12 @@ export function OrderTable({ orders }: IProps) {
 
             {orders.map((order) => (
               <TableRow key={order.id ?? order.number}>
-                <TableCell className="font-medium text-slate-950">{order.number}</TableCell>
-                <TableCell className="text-slate-600">{showDate(order.orderDate)}</TableCell>
-                <TableCell className="text-right font-medium text-slate-950">
+                <TableCell className="font-medium text-foreground">{order.number}</TableCell>
+                <TableCell className="text-muted-foreground">{showDate(order.orderDate)}</TableCell>
+                <TableCell className="text-right font-medium text-foreground">
                   {money.format(order.price)}
                 </TableCell>
-                <TableCell className="text-slate-600">
+                <TableCell className="text-muted-foreground">
                   <ul className="grid gap-1">
                     {order.materials.map((material) => (
                       <li key={material.materialId}>

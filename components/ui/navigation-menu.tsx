@@ -55,7 +55,7 @@ export function NavigationMenuItem({
 }
 
 export const navigationMenuTriggerStyle = cva(
-  "group inline-flex h-10 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium text-slate-950 transition-colors hover:bg-slate-100 hover:text-slate-950 focus:bg-slate-100 focus:text-slate-950 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-slate-100",
+  "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-accent",
 );
 
 export function NavigationMenuTrigger({
@@ -84,7 +84,7 @@ export function NavigationMenuContent({
   return (
     <NavigationMenuPrimitive.Content
       className={cn(
-        "absolute left-0 top-full z-50 mt-2 w-max min-w-56 rounded-md border border-slate-200 bg-white p-1 text-slate-950 shadow-lg data-[motion=from-end]:animate-in data-[motion=from-start]:animate-in data-[motion=to-end]:animate-out data-[motion=to-start]:animate-out",
+        "absolute left-0 top-full z-50 mt-2 w-max min-w-56 rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[motion=from-end]:animate-in data-[motion=from-start]:animate-in data-[motion=to-end]:animate-out data-[motion=to-start]:animate-out",
         className,
       )}
       {...props}
@@ -99,7 +99,7 @@ export function NavigationMenuLink({
   return (
     <NavigationMenuPrimitive.Link
       className={cn(
-        "block rounded-sm p-3 text-sm leading-none text-slate-600 no-underline outline-none transition-colors hover:bg-slate-100 hover:text-slate-950 focus:bg-slate-100 focus:text-slate-950",
+        "block rounded-sm p-3 text-sm leading-none text-muted-foreground no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
         className,
       )}
       {...props}
@@ -115,7 +115,7 @@ export function NavigationMenuViewport({
     <div className="absolute left-0 top-full flex justify-center">
       <NavigationMenuPrimitive.Viewport
         className={cn(
-          "origin-top-center relative mt-2 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border border-slate-200 bg-white text-slate-950 shadow-lg md:w-[var(--radix-navigation-menu-viewport-width)]",
+          "origin-top-center relative mt-2 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md md:w-[var(--radix-navigation-menu-viewport-width)]",
           className,
         )}
         {...props}

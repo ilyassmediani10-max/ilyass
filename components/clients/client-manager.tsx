@@ -31,7 +31,7 @@ export function ClientManager({ initialClients, canEdit = true }: IProps) {
     <>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         {manager.message ? (
-          <p className="text-sm text-slate-600">{manager.message}</p>
+          <p className="text-sm text-muted-foreground">{manager.message}</p>
         ) : (
           <span />
         )}
@@ -85,16 +85,16 @@ function ClientTable({ clients }: { clients: Client[] }) {
         <TableBody>
           {clients.length === 0 ? (
             <TableRow>
-              <TableCell className="py-10 text-center text-slate-500" colSpan={3}>
+              <TableCell className="py-10 text-center text-muted-foreground" colSpan={3}>
                 No clients found.
               </TableCell>
             </TableRow>
           ) : null}
           {clients.map((client) => (
             <TableRow key={client.id ?? client.clientNumber}>
-              <TableCell className="font-medium text-slate-950">{getClientName(client)}</TableCell>
+              <TableCell className="font-medium text-foreground">{getClientName(client)}</TableCell>
               <TableCell>{client.clientNumber}</TableCell>
-              <TableCell className="text-slate-600">{getClientAddress(client)}</TableCell>
+              <TableCell className="text-muted-foreground">{getClientAddress(client)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
