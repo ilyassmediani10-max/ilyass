@@ -1,8 +1,10 @@
 import { DataManagementPage } from "@/components/admin/data-management-page";
+import { PageHeading } from "@/components/admin/page-heading";
+import { SummaryCard } from "@/components/admin/summary-card";
 import { ClientManager } from "@/components/clients/client-manager";
 import { OrderTable } from "@/components/orders/order-table";
 import { Card, CardContent } from "@/components/ui/card";
-import { getTotalMaterialCosts } from "@/services/material-service";
+import { getPlannedMaterialCosts, getTotalMaterialCosts } from "@/services/material-service";
 import { getClients } from "@/services/client-service";
 import { getMaterialRequirements, getOrderQuerySummary } from "@/services/order-service";
 import { money } from "@/utils/order-view";
@@ -18,7 +20,7 @@ export default async function ReportsPage({ params }: IProps) {
   if (slug[0] === "clients") {
     return (
       <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
-        <PageTitle title="Client Report" />
+        <PageHeading section="Reports" title="Client Report" />
         <ClientManager canEdit={false} initialClients={await getClients()} />
       </main>
     );
@@ -29,7 +31,7 @@ export default async function ReportsPage({ params }: IProps) {
 
     return (
       <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
-        <PageTitle title="Order Report" />
+        <PageHeading section="Reports" title="Order Report" />
         <OrderTable orders={summary.orders} />
       </main>
     );
@@ -40,8 +42,15 @@ export default async function ReportsPage({ params }: IProps) {
 
     return (
       <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
-        <PageTitle title="Material Requirements Report" />
+        <PageHeading section="Reports" title="Material Requirements Report" />
         <section className="mt-8 grid gap-4 md:grid-cols-2">
+          {requirements.length === 0 ? (
+            <Card>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">No material requirements found.</p>
+              </CardContent>
+            </Card>
+          ) : null}
           {requirements.map((item) => (
             <Card key={item.materialId}>
               <CardContent>
@@ -64,37 +73,19 @@ export default async function ReportsPage({ params }: IProps) {
       getTotalMaterialCosts(),
     ]);
     const orderTotal = summary.orders.reduce((sum, order) => sum + order.price, 0);
+    const plannedMaterialTotal = await getPlannedMaterialCosts();
 
     return (
       <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
-        <PageTitle title="Cost Summary" />
-        <section className="mt-8 grid gap-4 md:grid-cols-2">
+        <PageHeading section="Reports" title="Cost Summary" />
+        <section className="mt-8 grid gap-4 md:grid-cols-3">
           <SummaryCard label="Order Prices" value={money.format(orderTotal)} />
-          <SummaryCard label="Material Costs" value={money.format(totalMaterialCosts)} />
+          <SummaryCard label="Planned Material Costs" value={money.format(plannedMaterialTotal)} />
+          <SummaryCard label="Used Material Costs" value={money.format(totalMaterialCosts)} />
         </section>
       </main>
     );
   }
 
   return <DataManagementPage path={path} section="Reports" />;
-}
-
-function PageTitle({ title }: { title: string }) {
-  return (
-    <div>
-      <p className="text-sm font-medium text-muted-foreground">Reports</p>
-      <h1 className="mt-1 text-3xl font-bold tracking-tight">{title}</h1>
-    </div>
-  );
-}
-
-function SummaryCard({ label, value }: { label: string; value: string }) {
-  return (
-    <Card>
-      <CardContent>
-        <p className="text-sm text-muted-foreground">{label}</p>
-        <p className="mt-2 text-3xl font-bold tracking-tight text-foreground">{value}</p>
-      </CardContent>
-    </Card>
-  );
 }

@@ -58,14 +58,16 @@ export function HomeContent({ role }: IProps) {
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href={visibleLinks[0].href}
-                className="inline-flex h-10 items-center justify-center rounded-md bg-white px-5 text-sm font-medium text-zinc-950 shadow-xs transition hover:bg-zinc-100"
+                className="inline-flex h-10 items-center justify-center rounded-md bg-white px-5 text-sm font-medium shadow-xs transition hover:bg-zinc-100"
+                style={{ color: "#18181b" }}
               >
                 Open {visibleLinks[0].label}
               </Link>
               {visibleLinks[1] ? (
                 <Link
                   href={visibleLinks[1].href}
-                  className="inline-flex h-10 items-center justify-center rounded-md border border-white/40 bg-white/10 px-5 text-sm font-medium text-white backdrop-blur transition hover:bg-white/20"
+                  className="inline-flex h-10 items-center justify-center rounded-md border border-white/40 bg-white/10 px-5 text-sm font-medium backdrop-blur transition hover:bg-white/20"
+                  style={{ color: "#ffffff" }}
                 >
                   View {visibleLinks[1].label}
                 </Link>

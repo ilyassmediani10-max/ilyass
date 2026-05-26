@@ -13,6 +13,7 @@ export const navGroups: NavGroup[] = [
     label: "Orders",
     items: [
       { label: "Order List", href: "/orders" },
+      { label: "New Order", href: "/orders/new" },
       { label: "Expired Orders", href: "/orders/expired" },
       { label: "Orders Expiring This Month", href: "/orders/expiring-this-month" },
       { label: "Order Deadlines", href: "/orders/deadlines" },
@@ -21,7 +22,7 @@ export const navGroups: NavGroup[] = [
   {
     label: "Materials",
     items: [
-      { label: "Material List", href: "/materials" },
+      { label: "Material List", href: "/materials/list" },
       { label: "Materials by Order", href: "/materials/by-order" },
       { label: "Material Usage", href: "/materials/usage" },
       { label: "Material Requirements", href: "/materials/requirements" },

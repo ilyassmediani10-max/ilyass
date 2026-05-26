@@ -1,6 +1,7 @@
 import { DataManagementPage } from "@/components/admin/data-management-page";
+import { PageHeading } from "@/components/admin/page-heading";
+import { MaterialUsageManager } from "@/components/admin/material-usage-manager";
 import { MaterialManager } from "@/components/admin/material-manager";
-import { OrderTable } from "@/components/orders/order-table";
 import { Card } from "@/components/ui/card";
 import {
   Table,
@@ -10,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getMaterials } from "@/services/material-service";
+import { getMaterials, getMaterialUsage } from "@/services/material-service";
 import { getMaterialRequirements, getOrders } from "@/services/order-service";
 import { getCurrentRole } from "@/utils/server-auth";
 import { money } from "@/utils/order-view";
@@ -22,7 +23,7 @@ type IProps = {
 export default async function MaterialsPage({ params }: IProps) {
   const { slug = [] } = await params;
 
-  if (slug.length === 0) {
+  if (slug.length === 0 || slug[0] === "list") {
     const [materials, role] = await Promise.all([getMaterials(), getCurrentRole()]);
 
     return <MaterialManager canEdit={role === "ADMIN"} initialMaterials={materials} />;
@@ -33,37 +34,87 @@ export default async function MaterialsPage({ params }: IProps) {
 
     return (
       <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
-        <PageTitle section="Materials" title="Material Requirements" />
+        <PageHeading section="Materials" title="Material Requirements" />
         <RequirementsTable requirements={requirements} />
       </main>
     );
   }
 
-  if (slug[0] === "by-order" || slug[0] === "usage") {
-    const orders = await getOrders();
+  if (slug[0] === "usage") {
+    const [materials, orders, role, usage] = await Promise.all([
+      getMaterials(),
+      getOrders(),
+      getCurrentRole(),
+      getMaterialUsage(),
+    ]);
+
+    return (
+      <MaterialUsageManager
+        canEdit={role === "ADMIN"}
+        initialUsage={usage}
+        materials={materials}
+        orders={orders}
+      />
+    );
+  }
+
+  if (slug[0] === "by-order") {
+    const usage = await getMaterialUsage();
+    const usageByOrder = new Map<string, typeof usage>();
+
+    usage.forEach((item) => {
+      const orderKey = item.orderNumber ?? item.orderId;
+      const rows = usageByOrder.get(orderKey) ?? [];
+
+      rows.push(item);
+      usageByOrder.set(orderKey, rows);
+    });
 
     return (
       <main className="mx-auto w-full max-w-6xl px-6 py-10 text-foreground">
-        <PageTitle
-          section="Materials"
-          title={slug[0] === "by-order" ? "Materials By Order" : "Material Usage"}
-        />
-        <OrderTable orders={orders} />
+        <PageHeading section="Materials" title="Materials By Order" />
+        <section className="mt-8 grid gap-4">
+          {[...usageByOrder.entries()].map(([orderNumber, rows]) => (
+            <Card key={orderNumber} className="overflow-hidden">
+              <div className="border-b p-4">
+                <h2 className="font-semibold text-foreground">{orderNumber}</h2>
+              </div>
+              <div className="overflow-x-auto">
+                <Table className="min-w-[640px]">
+                  <TableHeader>
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead>Material</TableHead>
+                      <TableHead>Unit</TableHead>
+                      <TableHead className="text-right">Planned</TableHead>
+                      <TableHead className="text-right">Used</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {rows.map((row) => (
+                      <TableRow key={row.id ?? `${row.orderId}-${row.materialId}`}>
+                        <TableCell className="font-medium">{row.materialName ?? row.materialId}</TableCell>
+                        <TableCell className="text-muted-foreground">{row.materialUnit ?? "-"}</TableCell>
+                        <TableCell className="text-right">{row.plannedQuantity}</TableCell>
+                        <TableCell className="text-right">{row.usedQuantity}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+          ))}
+          {usage.length === 0 ? (
+            <Card className="p-6 text-sm text-muted-foreground">
+              No material usage saved yet.
+            </Card>
+          ) : null}
+        </section>
       </main>
     );
   }
 
   const path = ["materials", ...slug].join("/");
   return <DataManagementPage path={path} section="Materials" />;
-}
-
-function PageTitle({ section, title }: { section: string; title: string }) {
-  return (
-    <div>
-      <p className="text-sm font-medium text-muted-foreground">{section}</p>
-      <h1 className="mt-1 text-3xl font-bold tracking-tight">{title}</h1>
-    </div>
-  );
 }
 
 function RequirementsTable({

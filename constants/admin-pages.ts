@@ -3,6 +3,7 @@ export const adminPageTitles: Record<string, string> = {
   "costs/order-prices": "Order Prices",
   "costs/total-material-costs": "Total Material Costs",
   "materials/by-order": "Materials by Order",
+  "materials/list": "Material List",
   "materials/requirements": "Material Requirements",
   "materials/usage": "Material Usage",
   materials: "Material List",

@@ -1,6 +1,22 @@
-import { createMaterialUsage } from "@/services/material-service";
+import { createMaterialUsage, getMaterialUsage } from "@/services/material-service";
 import { requireAdmin } from "@/utils/access-control";
+import { getApiErrorMessage } from "@/utils/api-error";
 import { materialUsageSchema, type IMaterialUsageInput } from "@/validators/material-validator";
+
+export async function GET() {
+  try {
+    const usage = await getMaterialUsage();
+
+    return Response.json(usage);
+  } catch (error) {
+    return Response.json(
+      {
+        message: getApiErrorMessage(error, "Could not load material usage"),
+      },
+      { status: 400 },
+    );
+  }
+}
 
 export async function POST(request: Request) {
   try {
@@ -19,8 +35,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return Response.json(
       {
-        message:
-          error instanceof Error ? error.message : "Could not create material usage",
+        message: getApiErrorMessage(error, "Could not create material usage"),
       },
       { status: 400 },
     );

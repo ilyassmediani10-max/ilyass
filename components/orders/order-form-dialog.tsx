@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
-import { orderStatuses } from "@/hooks/use-order-manager";
+import { orderStatuses } from "@/constants/order-status";
 import { getClientName } from "@/utils/client-mappers";
 
 type IProps = {

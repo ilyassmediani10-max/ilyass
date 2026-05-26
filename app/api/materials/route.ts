@@ -1,5 +1,6 @@
 import { createMaterial, getMaterials } from "@/services/material-service";
 import { requireAdmin } from "@/utils/access-control";
+import { getApiErrorMessage } from "@/utils/api-error";
 import { materialSchema, type IMaterialInput } from "@/validators/material-validator";
 
 export async function GET() {
@@ -10,8 +11,7 @@ export async function GET() {
   } catch (error) {
     return Response.json(
       {
-        message:
-          error instanceof Error ? error.message : "Could not load materials",
+        message: getApiErrorMessage(error, "Could not load materials"),
       },
       { status: 400 },
     );
@@ -35,8 +35,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return Response.json(
       {
-        message:
-          error instanceof Error ? error.message : "Could not create material",
+        message: getApiErrorMessage(error, "Could not create material"),
       },
       { status: 400 },
     );

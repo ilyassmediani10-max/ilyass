@@ -1,4 +1,5 @@
 import mongoose, { Schema, type Model } from "mongoose";
+import { orderStatuses } from "@/constants/order-status";
 import type { Order } from "@/types/order-t";
 
 const orderSchema = new Schema(
@@ -9,7 +10,7 @@ const orderSchema = new Schema(
     orderDate: { type: String, required: true, trim: true },
     deadline: { type: String, required: true, trim: true },
     price: { type: Number, required: true, min: 0 },
-    status: { type: String, required: true, trim: true },
+    status: { type: String, enum: orderStatuses, required: true, trim: true },
   },
   {
     collection: "orders",

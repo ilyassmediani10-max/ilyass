@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { createOrder, deleteOrder as deleteOrderRequest, getOrders, updateOrder } from "@/api/orders-api";
+import { OrderStatus } from "@/constants/order-status";
 import type { Client } from "@/types/client-t";
 import type { Order } from "@/types/order-t";
 import { getClientName } from "@/utils/client-mappers";
@@ -19,18 +20,9 @@ export const blankOrder: Order = {
   orderDate: "",
   deadline: "",
   price: 0,
-  status: "Planning",
+  status: OrderStatus.planning,
   materials: [],
 };
-
-export const orderStatuses = [
-  "Planning",
-  "Scheduled",
-  "Materials ready",
-  "In progress",
-  "Delayed",
-  "Completed",
-];
 
 type IParams = {
   clients: Client[];

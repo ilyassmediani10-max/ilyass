@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { orders as sampleOrders } from "@/constants/order-data";
+import { OrderStatus } from "@/constants/order-status";
 import { ClientModel } from "@/models/client-model";
 import { MaterialUsageModel } from "@/models/material-usage-model";
 import { OrderModel } from "@/models/order-model";
@@ -57,7 +58,7 @@ export async function getOrders(): Promise<Order[]> {
 export async function getExpiredOrders(): Promise<Order[]> {
   const documents = await getOrderDocuments({
     deadline: { $lt: todayIso() },
-    status: { $ne: "Completed" },
+    status: { $ne: OrderStatus.completed },
   });
 
   return documents.map((document) => toOrder(document as OrderRecord));
@@ -67,7 +68,7 @@ export async function getOrdersExpiringThisMonth(): Promise<Order[]> {
   const { end, start } = monthRange();
   const documents = await getOrderDocuments({
     deadline: { $gte: start, $lt: end },
-    status: { $ne: "Completed" },
+    status: { $ne: OrderStatus.completed },
   });
 
   return documents.map((document) => toOrder(document as OrderRecord));
@@ -135,10 +136,23 @@ export async function deleteOrder(orderId: string) {
 }
 
 export async function getMaterialRequirements(): Promise<MaterialRequirement[]> {
-  await connectMongoose();
-  const rows = await MaterialUsageModel.find({})
-    .populate("materialId")
-    .lean();
+  let rows: Array<{
+    materialId: unknown;
+    plannedQuantity: unknown;
+    priceSnapshot?: unknown;
+  }> = [];
+
+  try {
+    await connectMongoose();
+    rows = await MaterialUsageModel.find({})
+      .populate("materialId")
+      .lean();
+  } catch (error) {
+    console.error("Could not load material requirements from MongoDB", error);
+
+    return [];
+  }
+
   const requirements = new Map<string, MaterialRequirement>();
 
   rows.forEach((row) => {

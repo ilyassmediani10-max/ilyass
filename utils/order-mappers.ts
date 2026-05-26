@@ -1,3 +1,4 @@
+import { OrderStatus, orderStatuses } from "@/constants/order-status";
 import type { Order } from "@/types/order-t";
 import { getClientName } from "@/utils/client-mappers";
 
@@ -16,7 +17,7 @@ export function trimOrder(order: Order): Order {
     orderDate: order.orderDate.trim(),
     deadline: order.deadline.trim(),
     price: Number(order.price) || 0,
-    status: order.status.trim(),
+    status: toOrderStatus(order.status),
     materials: order.materials ?? [],
   };
 }
@@ -52,7 +53,13 @@ export function toOrder(order: OrderRecord): Order {
     orderDate: order.orderDate,
     deadline: order.deadline,
     price: order.price,
-    status: order.status,
+    status: toOrderStatus(order.status),
     materials: order.materials ?? [],
   };
+}
+
+function toOrderStatus(value: string): OrderStatus {
+  return orderStatuses.includes(value as OrderStatus)
+    ? (value as OrderStatus)
+    : OrderStatus.planning;
 }

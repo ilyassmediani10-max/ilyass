@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { materials as sampleMaterials } from "@/constants/material-data";
 import { MaterialUsageModel } from "@/models/material-usage-model";
 import { MaterialModel } from "@/models/material-model";
 import { OrderModel } from "@/models/order-model";
@@ -51,10 +52,20 @@ function toMaterialUsage(document: MaterialUsage & {
 }
 
 export async function getMaterials(): Promise<Material[]> {
-  await connectMongoose();
-  const documents = await MaterialModel.find({}).sort({ name: 1 }).lean();
+  try {
+    await connectMongoose();
+    const documents = await MaterialModel.find({}).sort({ name: 1 }).lean();
 
-  return documents.map((document) => toMaterial(document as Material & { _id?: unknown }));
+    if (documents.length === 0) {
+      return sampleMaterials;
+    }
+
+    return documents.map((document) => toMaterial(document as Material & { _id?: unknown }));
+  } catch (error) {
+    console.error("Could not load materials from MongoDB", error);
+
+    return sampleMaterials;
+  }
 }
 
 export async function createMaterial(material: MaterialInput) {
@@ -112,6 +123,22 @@ export async function createMaterials(materials: Material[]) {
   return MaterialModel.insertMany(materials.map(toMaterial));
 }
 
+export async function getMaterialUsage(): Promise<MaterialUsage[]> {
+  try {
+    await connectMongoose();
+    const documents = await MaterialUsageModel.find({})
+      .populate("materialId")
+      .populate("orderId")
+      .lean();
+
+    return documents.map((document) => toMaterialUsage(document as MaterialUsage & { _id?: unknown }));
+  } catch (error) {
+    console.error("Could not load material usage from MongoDB", error);
+
+    return [];
+  }
+}
+
 export async function getMaterialUsageByOrder(orderId: string): Promise<MaterialUsage[]> {
   ensureObjectId(orderId, "order");
   await connectMongoose();
@@ -150,13 +177,17 @@ export async function createMaterialUsage(input: MaterialUsageInput) {
 }
 
 export async function getTotalMaterialCosts() {
-  await connectMongoose();
-  const usage = await MaterialUsageModel.find({}).populate("materialId").lean();
+  const usage = await getMaterialUsage();
 
   return usage.reduce((total, row) => {
-    const material = row.materialId as unknown as { price?: number };
-    const price = Number(row.priceSnapshot ?? material?.price) || 0;
+    return total + row.priceSnapshot * row.usedQuantity;
+  }, 0);
+}
 
-    return total + price * (Number(row.usedQuantity) || 0);
+export async function getPlannedMaterialCosts() {
+  const usage = await getMaterialUsage();
+
+  return usage.reduce((total, row) => {
+    return total + row.priceSnapshot * row.plannedQuantity;
   }, 0);
 }

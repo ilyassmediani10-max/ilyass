@@ -1,3 +1,5 @@
+import type { OrderStatus } from "@/constants/order-status";
+
 export type OrderMaterial = {
   materialId: string;
   name: string;
@@ -16,7 +18,7 @@ export type Order = {
   orderDate: string;
   deadline: string;
   price: number;
-  status: string;
+  status: OrderStatus;
   materials: OrderMaterial[];
 };
 
@@ -27,7 +29,7 @@ export type OrderInput = {
   orderDate: string;
   deadline: string;
   price: number;
-  status: string;
+  status: OrderStatus;
 };
 
 export type MaterialRequirement = {

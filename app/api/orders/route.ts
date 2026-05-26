@@ -1,5 +1,6 @@
 import { createOrder, getExpiredOrders, getOrders, getOrdersExpiringThisMonth } from "@/services/order-service";
 import { requireAdmin } from "@/utils/access-control";
+import { getApiErrorMessage } from "@/utils/api-error";
 import { orderSchema, type IOrderInput } from "@/validators/order-validator";
 
 export async function GET(request: Request) {
@@ -16,8 +17,7 @@ export async function GET(request: Request) {
   } catch (error) {
     return Response.json(
       {
-        message:
-          error instanceof Error ? error.message : "Could not load orders",
+        message: getApiErrorMessage(error, "Could not load orders"),
       },
       { status: 400 },
     );
@@ -41,8 +41,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return Response.json(
       {
-        message:
-          error instanceof Error ? error.message : "Could not create order",
+        message: getApiErrorMessage(error, "Could not create order"),
       },
       { status: 400 },
     );

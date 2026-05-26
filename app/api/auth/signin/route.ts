@@ -1,7 +1,7 @@
 import { signIn } from "@/services/auth-service";
+import { getApiErrorMessage } from "@/utils/api-error";
 import { AUTH_COOKIE } from "@/utils/session-cookie";
 import { signInSchema } from "@/validators/auth-validator";
-import { ZodError } from "zod";
 
 export async function POST(request: Request) {
   try {
@@ -19,9 +19,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return Response.json(
       {
-        message:
-          error instanceof ZodError ? (error.issues[0]?.message ?? "Check your sign in details.") :
-          error instanceof Error ? error.message : "Could not sign in",
+        message: getApiErrorMessage(error, "Could not sign in"),
       },
       { status: 400 },
     );

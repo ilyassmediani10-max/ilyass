@@ -1,6 +1,7 @@
 import { createClient, getClients } from "@/services/client-service";
 import { clientSchema, type ClientInput } from "@/validators/client-validator";
 import { requireAdmin } from "@/utils/access-control";
+import { getApiErrorMessage } from "@/utils/api-error";
 
 export async function GET(request: Request) {
   try {
@@ -11,8 +12,7 @@ export async function GET(request: Request) {
   } catch (error) {
     return Response.json(
       {
-        message:
-          error instanceof Error ? error.message : "Could not load clients",
+        message: getApiErrorMessage(error, "Could not load clients"),
       },
       { status: 400 },
     );
@@ -36,8 +36,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return Response.json(
       {
-        message:
-          error instanceof Error ? error.message : "Could not create client",
+        message: getApiErrorMessage(error, "Could not create client"),
       },
       { status: 400 },
     );

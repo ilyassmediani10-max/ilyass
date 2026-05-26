@@ -1,4 +1,5 @@
 import type { Order } from "@/types/order-t";
+import { OrderStatus } from "@/constants/order-status";
 
 export const orders: Order[] = [
   {
@@ -11,7 +12,7 @@ export const orders: Order[] = [
     orderDate: "2026-04-22",
     deadline: "2026-06-14",
     price: 18450,
-    status: "In progress",
+    status: OrderStatus.inProgress,
     materials: [
       { materialId: "MAT-101", name: "Porcelain tile", unit: "sq ft", quantity: 180, unitCost: 5.75 },
       { materialId: "MAT-102", name: "Cabinet paint", unit: "gal", quantity: 8, unitCost: 42 },
@@ -28,7 +29,7 @@ export const orders: Order[] = [
     orderDate: "2026-05-01",
     deadline: "2026-05-28",
     price: 9720,
-    status: "Materials ready",
+    status: OrderStatus.materialsReady,
     materials: [
       { materialId: "MAT-101", name: "Porcelain tile", unit: "sq ft", quantity: 95, unitCost: 5.75 },
       { materialId: "MAT-104", name: "Waterproof membrane", unit: "roll", quantity: 3, unitCost: 88 },
@@ -45,7 +46,7 @@ export const orders: Order[] = [
     orderDate: "2026-05-09",
     deadline: "2026-07-03",
     price: 24100,
-    status: "Planning",
+    status: OrderStatus.planning,
     materials: [
       { materialId: "MAT-102", name: "Cabinet paint", unit: "gal", quantity: 12, unitCost: 42 },
       { materialId: "MAT-106", name: "Primer", unit: "gal", quantity: 10, unitCost: 24 },
@@ -62,7 +63,7 @@ export const orders: Order[] = [
     orderDate: "2026-05-12",
     deadline: "2026-06-02",
     price: 6300,
-    status: "Scheduled",
+    status: OrderStatus.scheduled,
     materials: [
       { materialId: "MAT-107", name: "Oak flooring", unit: "sq ft", quantity: 310, unitCost: 7.2 },
       { materialId: "MAT-108", name: "Floor adhesive", unit: "bucket", quantity: 6, unitCost: 36 },
@@ -78,7 +79,7 @@ export const orders: Order[] = [
     orderDate: "2026-04-10",
     deadline: "2026-05-10",
     price: 1850,
-    status: "Delayed",
+    status: OrderStatus.delayed,
     materials: [
       { materialId: "MAT-109", name: "Door casing", unit: "set", quantity: 1, unitCost: 145 },
       { materialId: "MAT-102", name: "Cabinet paint", unit: "gal", quantity: 2, unitCost: 42 },

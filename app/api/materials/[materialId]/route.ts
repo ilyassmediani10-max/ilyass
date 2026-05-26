@@ -1,5 +1,6 @@
 import { deleteMaterial, updateMaterial } from "@/services/material-service";
 import { requireAdmin } from "@/utils/access-control";
+import { getApiErrorMessage } from "@/utils/api-error";
 import { materialSchema, type IMaterialInput } from "@/validators/material-validator";
 
 export async function PUT(
@@ -20,8 +21,7 @@ export async function PUT(
   } catch (error) {
     return Response.json(
       {
-        message:
-          error instanceof Error ? error.message : "Could not update material",
+        message: getApiErrorMessage(error, "Could not update material"),
       },
       { status: 400 },
     );
@@ -45,8 +45,7 @@ export async function DELETE(
   } catch (error) {
     return Response.json(
       {
-        message:
-          error instanceof Error ? error.message : "Could not delete material",
+        message: getApiErrorMessage(error, "Could not delete material"),
       },
       { status: 400 },
     );

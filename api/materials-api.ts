@@ -43,6 +43,11 @@ export function createMaterialUsage(usage: MaterialUsageInput) {
   }).then((response) => parseResponse<{ insertedId: string; message: string }>(response));
 }
 
+export function getMaterialUsage() {
+  return fetch("/api/material-usage")
+    .then((response) => parseResponse<MaterialUsage[]>(response));
+}
+
 export function getMaterialsByOrder(orderId: string) {
   return fetch(`/api/material-usage/by-order/${encodeURIComponent(orderId)}`)
     .then((response) => parseResponse<MaterialUsage[]>(response));
